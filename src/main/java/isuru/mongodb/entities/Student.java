@@ -16,16 +16,18 @@ public class Student {
     private String firstName;
     private String lastName;
     private Gender gender;
+    private Integer age;
     @Indexed(unique = true)
     private String email;
     private Address address;
     private List<String> favouriteSubjects;
     private LocalDateTime created;
 
-    public Student(String firstName, String lastName, Gender gender, String email, Address address, List<String> favouriteSubjects, LocalDateTime created) {
+    public Student(String firstName, String lastName, Gender gender, Integer age, String email, Address address, List<String> favouriteSubjects, LocalDateTime created) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.age = age;
         this.email = email;
         this.address = address;
         this.favouriteSubjects = favouriteSubjects;
