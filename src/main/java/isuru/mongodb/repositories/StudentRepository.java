@@ -26,11 +26,15 @@ public interface StudentRepository extends MongoRepository<Student, String> {
     @Query(value = "{'firstName': ?0}", fields = "{'email':0}")
     List<Student> removeEmailResponseField(String firstName);
 
+    // text indexing
     // case-sensitive: find by upper or lowercase
     @Query("{'firstName': {'$regex': ?0, '$options': 'i'} }")
     List<Student> findByNameIgnoreCaseSensitivity(String name);
 
     @Query("{'age':{'$gt': ?0, 'lt': ?1}")
     List<Student> findStudentByAgeBetween(int minAge, int maxAge);
+
+
+    List<Student> findByFirstNameOrderByLastName(String firstName);
 
 }

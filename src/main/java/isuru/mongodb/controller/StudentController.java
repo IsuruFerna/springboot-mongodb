@@ -1,11 +1,14 @@
 package isuru.mongodb.controller;
 
+import isuru.mongodb.entities.AgeCount;
 import isuru.mongodb.entities.Student;
 import isuru.mongodb.repositories.StudentRepository;
 import isuru.mongodb.services.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,5 +74,31 @@ public class StudentController {
     public List<Student> findStudentByAgeBetween(@PathVariable (value = "minAge") Integer minAge,
                                                  @PathVariable (value = "maxAge") Integer maxAge) {
         return studentRepository.findStudentByAgeBetween(minAge, maxAge);
+    }
+
+    @GetMapping("/orderByLastName/{firstName}")
+    public List<Student> findByFirstNameOrderByLastName(@PathVariable (value = "firstName") String firstName) {
+        return studentRepository.findByFirstNameOrderByLastName(firstName);
+    }
+
+    // aggregation
+    // returns a data set of custom build class
+    // get a number and returns count of people has that much age group
+    //    {
+    //        id: 30(age group),
+    //        count: 3(number of people in that age group)
+    //    }
+    @GetMapping("aggregation/{age}")
+    public List<Student> findByAgeMatch(@PathVariable(value = "age") int age) {
+        // group
+        GroupOperation groupByDepth = Aggregation.group("age").count().as("count");
+        // matchOperation
+        MatchOperation matchOperation = Aggregation.match(new Criteria("count").is(age));
+        // sortOperation
+        SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "count"));
+        // aggregation
+        Aggregation aggregation = Aggregation.newAggregation(groupByDepth, matchOperation, sortOperation);
+        AggregationResults output = mongoTemplate.aggregate(aggregation, "student", AgeCount.class);
+        return output.getMappedResults();
     }
 }

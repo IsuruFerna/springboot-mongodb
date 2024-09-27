@@ -26,8 +26,8 @@ public class MongodbApplication {
 	CommandLineRunner runner(StudentRepository repository, MongoTemplate mongoTemplate) {
 		return args -> {
 			Address address = new Address("England", "London", "NE");
-			String email = "bob@example.com";
-			Student student = new Student("Bob", "Ferna", Gender.MALE, 30, email, address, List.of("Math", "Science"), LocalDateTime.now());
+			String email = "rona@example.com";
+			Student student = new Student("Ron", "Ab", Gender.MALE, 30, email, address, List.of("Math", "Science"), LocalDateTime.now());
 
 			// usingMongoTemplateAndQuery(repository, mongoTemplate, email, student);
 
